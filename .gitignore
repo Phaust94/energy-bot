@@ -1,0 +1,6 @@
+*.exe
+/private
+secrets.py
+.idea
+api_key.txt
+*.sqlite
