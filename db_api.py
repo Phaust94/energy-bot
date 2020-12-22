@@ -233,6 +233,7 @@ class ElectricityDB:
                     where 1=1
                     and user_id = :tg_id
                     and ts < :month_start
+                    GROUP BY 1=1
                 ),
                 curr_month as (
                     SELECT
@@ -242,6 +243,7 @@ class ElectricityDB:
                     and user_id = :tg_id
                     and ts <= :now
                     and ts >= :month_start
+                    GROUP BY 1=1
                 ),
                 all_prev_raw as (
                     SELECT prev_month_max, 1 as prio
