@@ -243,16 +243,18 @@ class ElectricityDB:
                     and ts <= :now
                     and ts >= :month_start
                 ),
-                all_prev as (
-                
+                all_prev_raw as (
                     SELECT prev_month_max, 1 as prio
                     FROM prev_month_max
                     UNION ALL 
-                    SELECT THIS_MONTH_MIN, 2 as prio
+                    SELECT THIS_MONTH_MIN as prev_month_max, 2 as prio
                     FROM curr_month
-                    
-                ORDER BY prio
-                LIMIT 1
+                )
+                all_prev as (
+                    SELECT prev_month_max
+                    FROM all_prev_raw
+                    ORDER BY prio
+                    LIMIT 1
                 )
                 select 
                 MAX(value) - prev_month_max as MONTH_TOTAL
