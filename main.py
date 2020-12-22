@@ -29,6 +29,7 @@ def handle_text(update: Update, context: CallbackContext) -> None:
         db.add_record(tg_id, value, time, date)
     msg = "Record added successfully"
     update.message.reply_text(msg)
+    get_stats(update, context)
     return None
 
 
