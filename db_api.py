@@ -238,7 +238,6 @@ class ElectricityDB:
                     SELECT
                     MIN(value) as THIS_MONTH_MIN
                     from raw_records
-                    CROSS JOIN prev_month_max
                     where 1=1
                     and user_id = :tg_id
                     and ts <= :now
