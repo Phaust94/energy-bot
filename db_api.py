@@ -249,7 +249,7 @@ class ElectricityDB:
                     UNION ALL 
                     SELECT THIS_MONTH_MIN as prev_month_max, 2 as prio
                     FROM curr_month
-                )
+                ),
                 all_prev as (
                     SELECT prev_month_max
                     FROM all_prev_raw
