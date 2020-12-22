@@ -233,11 +233,32 @@ class ElectricityDB:
                     where 1=1
                     and user_id = :tg_id
                     and ts < :month_start
+                ),
+                curr_month as (
+                    SELECT
+                    MIN(value) as THIS_MONTH_MIN
+                    from raw_records
+                    CROSS JOIN prev_month_max
+                    where 1=1
+                    and user_id = :tg_id
+                    and ts <= :now
+                    and ts >= :month_start
+                ),
+                all_prev as (
+                
+                    SELECT prev_month_max, 1 as prio
+                    FROM prev_month_max
+                    UNION ALL 
+                    SELECT THIS_MONTH_MIN, 2 as prio
+                    FROM curr_month
+                    
+                ORDER BY prio
+                LIMIT 1
                 )
                 select 
                 MAX(value) - prev_month_max as MONTH_TOTAL
                 from raw_records
-                CROSS JOIN prev_month_max
+                CROSS JOIN all_prev
                 where 1=1
                 and user_id = :tg_id
                 and ts <= :now
