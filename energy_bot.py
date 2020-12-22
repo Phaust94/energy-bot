@@ -77,6 +77,12 @@ def get_stats(update: Update, context: CallbackContext) -> None:
     return None
 
 
+# noinspection PyUnusedLocal
+def info(update: Update, context: CallbackContext) -> None:
+    update.message.reply_text("This is a bot for tracking your energy consumption, like a fancy google doc.")
+    return None
+
+
 def main():
     updater = Updater(API_KEY, workers=1)
 
@@ -87,6 +93,7 @@ def main():
     updater.dispatcher.add_handler(MessageHandler(Filters.text & ~Filters.command, handle_text))
     updater.dispatcher.add_handler(CommandHandler("execute", execute_command))
     updater.dispatcher.add_handler(CommandHandler("stats", get_stats))
+    updater.dispatcher.add_handler(CommandHandler("info", info))
 
     updater.start_polling()
     updater.idle()
