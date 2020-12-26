@@ -84,6 +84,7 @@ def info(update: Update, context: CallbackContext) -> None:
 
 
 def main():
+    os.chdir(os.path.join(*os.path.split(__file__)[:-1]))
     updater = Updater(API_KEY, workers=1)
 
     for command in ["delete_records", "drop_tables", "list_hourly_records", "list_records"]:
