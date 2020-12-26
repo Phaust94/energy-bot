@@ -393,7 +393,8 @@ class ElectricityDB:
             }
         )
         delta = df.max() - df.min()
-        msg = f"Delta from the previous time is {delta:.1f} KWT"
+        delta = delta["PREV_RECORD"]
+        msg = f"Delta from the previous time is {delta:.1f} kWT"
         return msg
 
     def get_stats(self, tg_id: int) -> typing.Tuple[str, typing.List[str]]:
