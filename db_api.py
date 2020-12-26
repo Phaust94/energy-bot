@@ -275,7 +275,7 @@ class ElectricityDB:
                 "month_start": month_start,
             }
         )
-        msg = f"Month so far: {month_so_far['MONTH_TOTAL'].iloc[0]} kWT"
+        msg = f"Month so far: {month_so_far['MONTH_TOTAL'].iloc[0]:.1f} kWT"
         return msg
 
     def _hourly_month_to_day(
@@ -357,8 +357,8 @@ class ElectricityDB:
     def _daily_usage_str(daily_usage: pd.DataFrame) -> str:
         avg = daily_usage["ENERGY_SPENT"].mean()
         std = daily_usage["ENERGY_SPENT"].std()
-        msg1 = f"Daily average for this month so far: {avg} kWT"
-        msg2 = f"STD for this month so far: {std} kWT"
+        msg1 = f"Daily average for this month so far: {avg:.1f} kWT"
+        msg2 = f"STD for this month so far: {std:.1f} kWT"
         msg = f"{msg1}\n{msg2}"
         return msg
 
@@ -374,17 +374,42 @@ class ElectricityDB:
         fn = self.save_pic(tg_id, now)
         return fn
 
+    def diff_from_prev(self, tg_id: int, now: datetime.datetime):
+        query = """
+        select 
+                        value as PREV_RECORD
+                        from raw_records
+                        where 1=1
+                        and user_id = :tg_id
+                        and ts <= :now
+                        ORDER BY TS desc
+                        LIMIT 2
+        """
+        df = self.query(
+            query,
+            {
+                "tg_id": tg_id,
+                "now": now,
+            }
+        )
+        delta = df.max() - df.min()
+        msg = f"Delta from the previous time is {delta:.1f} KWT"
+        return msg
+
     def get_stats(self, tg_id: int) -> typing.Tuple[str, typing.List[str]]:
         txt = []
         charts = []
         now = self._prepare_date_time()
         month_start = now.replace(day=1, hour=0, minute=0, second=0, microsecond=0)
         txt.append(self._month_so_far(tg_id, now, month_start))
+        diff_prv = self.diff_from_prev(tg_id, now)
+        txt.append(diff_prv)
         # charts.append(self._hourly_month_to_day(tg_id, now, month_start))
 
         daily_usage = self._daily_usage(tg_id, now, month_start)
         txt.append(self._daily_usage_str(daily_usage))
         charts.append(self._daily_usage_chart(tg_id, now, daily_usage))
+
 
         txt = "\n".join(txt)
         return txt, charts

@@ -4,7 +4,6 @@ import os
 os.chdir(os.path.join(*os.path.split(__file__)[:-1]))
 
 from db_api import ElectricityDB
-print("Welcome to energy bot!!!")
 
 
 with open("api_key.txt", 'r') as f:
