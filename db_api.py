@@ -411,7 +411,6 @@ class ElectricityDB:
         txt.append(self._daily_usage_str(daily_usage))
         charts.append(self._daily_usage_chart(tg_id, now, daily_usage))
 
-
         txt = "\n".join(txt)
         return txt, charts
 
