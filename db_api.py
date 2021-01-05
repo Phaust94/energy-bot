@@ -324,6 +324,7 @@ class ElectricityDB:
         )
         with open(fn, 'wb') as f:
             plt.savefig(f)
+        plt.close()
         return fn
 
     def _daily_usage(
