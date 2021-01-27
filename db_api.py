@@ -417,7 +417,7 @@ class ElectricityDB:
                 color='tab:pink'
             )
         plt.xticks(rotation=90)
-        plt.legend(loc='upper  right')
+        plt.legend(loc='upper right')
         fn = self.save_pic(tg_id, now)
         return fn
 
