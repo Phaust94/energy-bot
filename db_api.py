@@ -380,18 +380,43 @@ class ElectricityDB:
         )
         avg = daily_usage["ENERGY_SPENT"].mean()
         daily_usage["ENERGY_SPENT_AVG"] = avg
+        std = daily_usage["ENERGY_SPENT"].std()
         fig, ax = plt.subplots()
         ax = daily_usage.plot(
             x='DAY_STR', y='ENERGY_SPENT', kind='bar',
             figsize=(10, 10),
+            color='b',
             ax=ax,
         )
-        daily_usage.plot(
+        ax = daily_usage.plot(
             x="DAY_STR", y="ENERGY_SPENT_AVG", kind="line",
-            style='r', ax=ax,
+            color='r',
+            label='_',
+            ax=ax,
         )
+        if not pd.isna(std):
+            daily_usage["ENERGY_SPENT_LOWER_BOUND"] = avg - 3 * std
+            daily_usage["ENERGY_SPENT_UPPER_BOUND"] = avg + 3 * std
+            ax = daily_usage.plot(
+                x="DAY_STR", y="ENERGY_SPENT_LOWER_BOUND", kind="line",
+                linestyle='--', color='m',
+                label='_',
+                ax=ax,
+            )
+            ax = daily_usage.plot(
+                x="DAY_STR", y="ENERGY_SPENT_UPPER_BOUND", kind="line",
+                linestyle='--', color='m',
+                label='_',
+                ax=ax,
+            )
+            ax.fill_between(
+                daily_usage["DAY_STR"],
+                daily_usage['ENERGY_SPENT_UPPER_BOUND'],
+                daily_usage['ENERGY_SPENT_LOWER_BOUND'],
+                color='tab:pink'
+            )
         plt.xticks(rotation=90)
-        plt.legend(loc='best')
+        plt.legend(loc='top right')
         fn = self.save_pic(tg_id, now)
         return fn
 
