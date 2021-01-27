@@ -4,6 +4,7 @@ import os
 os.chdir(os.path.join(*os.path.split(__file__)[:-1]))
 
 from db_api import ElectricityDB
+from version import __version__
 
 
 with open("api_key.txt", 'r') as f:
@@ -43,12 +44,11 @@ def cmd(cmd_text: str):
             msg = func(tg_id)
         if not msg:
             msg = "Command executed"
-        info = msg
-        if len(info) > MAX_MSG_LENGTH:
-            for x in range(0, len(info), MAX_MSG_LENGTH):
-                update.message.reply_text(info[x:x + MAX_MSG_LENGTH])
+        if len(msg) > MAX_MSG_LENGTH:
+            for x in range(0, len(msg), MAX_MSG_LENGTH):
+                update.message.reply_text(msg[x:x + MAX_MSG_LENGTH])
         else:
-            update.message.reply_text(info)
+            update.message.reply_text(msg)
         return None
     return cmd_inner
 
@@ -80,7 +80,10 @@ def get_stats(update: Update, context: CallbackContext) -> None:
 
 # noinspection PyUnusedLocal
 def info(update: Update, context: CallbackContext) -> None:
-    update.message.reply_text("This is a bot for tracking your energy consumption, like a fancy google doc.")
+    msg = "This is a bot for tracking your energy consumption, like a fancy google doc.\nVersion {}".format(
+        __version__
+    )
+    update.message.reply_text(msg)
     return None
 
 
