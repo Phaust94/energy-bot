@@ -4,3 +4,4 @@ secrets.py
 .idea
 api_key.txt
 *.sqlite
+tst*.py

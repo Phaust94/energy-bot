@@ -8,7 +8,7 @@ import pytz
 import pandas as pd
 import matplotlib.pyplot as plt
 
-from helpers import counter
+from helpers import counter, HOUR_COEFFICIENTS
 
 __all__ = [
     "ElectricityDB",
@@ -95,18 +95,27 @@ class ElectricityDB:
         delta_value = value - prev_row["VALUE"]
         current_ts = prev_ts + datetime.timedelta(hours=1)
         hour_start = current_ts.replace(minute=0, second=0, microsecond=0)
+        hourly_coefficients = []
         hours = []
         while hour_start < ts:
             hours.append(
                 hour_start
             )
+            hour_str = hour_start.strftime("%H")
+            hourly_coefficients.append(
+                HOUR_COEFFICIENTS[hour_str]
+            )
             current_ts += datetime.timedelta(hours=1)
             hour_start = current_ts.replace(minute=0, second=0, microsecond=0)
 
-        hourly_consumption = (delta_value / len(hours))
+        tot = sum(hourly_coefficients)
         deltas = [
-            {"USER_ID": tg_id, "TS": hour, "DELTA": hourly_consumption}
-            for hour in hours
+            {
+                "USER_ID": tg_id,
+                "TS": hour,
+                "DELTA": delta_value * coefficient / tot
+            }
+            for hour, coefficient in zip(hours, hourly_coefficients)
         ]
         deltas = pd.DataFrame(deltas)
         deltas.to_sql("HOURLY_DELTAS", self._db_conn, if_exists="append", index=False)
