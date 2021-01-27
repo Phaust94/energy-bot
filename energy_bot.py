@@ -87,6 +87,12 @@ def info(update: Update, context: CallbackContext) -> None:
     return None
 
 
+def error_handler(update: Update, context: CallbackContext) -> None:
+    msg = context.error
+    update.message.reply_text(msg)
+    return None
+
+
 def main():
     updater = Updater(API_KEY, workers=1)
 
@@ -98,6 +104,8 @@ def main():
     updater.dispatcher.add_handler(CommandHandler("execute", execute_command))
     updater.dispatcher.add_handler(CommandHandler("stats", get_stats))
     updater.dispatcher.add_handler(CommandHandler("info", info))
+
+    updater.dispatcher.add_error_handler(error_handler)
 
     updater.start_polling()
     updater.idle()

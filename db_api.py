@@ -289,6 +289,7 @@ class ElectricityDB:
         msg = f"Month so far: {total:.1f} kWT"
         return msg
 
+    # noinspection PyUnusedLocal
     def _hourly_month_to_day(
             self,
             tg_id: int,
