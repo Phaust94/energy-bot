@@ -88,7 +88,7 @@ def info(update: Update, context: CallbackContext) -> None:
 
 
 def error_handler(update: Update, context: CallbackContext) -> None:
-    msg = f"{context} {context.error}"
+    msg = f"An error occurred while handling that:\n{context.error}"
     update.message.reply_text(msg)
     return None
 
