@@ -350,6 +350,7 @@ class ElectricityDB:
                         from hourly_deltas
                         where 1=1
                         and user_id = :tg_id
+                        and ts <= :now
                         and ts >= :month_start
                         GROUP BY 1
                         ORDER BY 1
