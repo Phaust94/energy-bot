@@ -18,6 +18,8 @@ ADMIN_ID = 476001386
 
 TIME_TO_SECONDS_FORMAT = "%Y-%m-%d %H:%M:%S"
 
+N_SIGMA = 1
+
 
 @dataclass
 class ElectricityDB:
@@ -396,8 +398,8 @@ class ElectricityDB:
             ax=ax,
         )
         if not pd.isna(std):
-            daily_usage["ENERGY_SPENT_LOWER_BOUND"] = avg - 3 * std
-            daily_usage["ENERGY_SPENT_UPPER_BOUND"] = avg + 3 * std
+            daily_usage["ENERGY_SPENT_LOWER_BOUND"] = avg - N_SIGMA * std
+            daily_usage["ENERGY_SPENT_UPPER_BOUND"] = avg + N_SIGMA * std
             ax = daily_usage.plot(
                 x="DAY_STR", y="ENERGY_SPENT_LOWER_BOUND", kind="line",
                 linestyle='--', color='m',
