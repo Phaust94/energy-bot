@@ -391,6 +391,7 @@ class ElectricityDB:
             style='r', ax=ax,
         )
         plt.xticks(rotation=90)
+        plt.legend(loc='best')
         fn = self.save_pic(tg_id, now)
         return fn
 
