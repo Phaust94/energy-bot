@@ -284,7 +284,9 @@ class ElectricityDB:
                 "month_start": month_start,
             }
         )
-        msg = f"Month so far: {month_so_far['MONTH_TOTAL'].iloc[0]:.1f} kWT"
+        total = month_so_far['MONTH_TOTAL'].iloc[0]
+        total = total or 0
+        msg = f"Month so far: {total:.1f} kWT"
         return msg
 
     def _hourly_month_to_day(
@@ -348,7 +350,6 @@ class ElectricityDB:
                         from hourly_deltas
                         where 1=1
                         and user_id = :tg_id
-                        and ts <= :now
                         and ts >= :month_start
                         GROUP BY 1
                         ORDER BY 1
@@ -376,9 +377,17 @@ class ElectricityDB:
         daily_usage["DAY_STR"] = daily_usage["DAY"].apply(
             lambda x: x[5:]
         )
-        daily_usage.plot(
+        avg = daily_usage["ENERGY_SPENT"].mean()
+        daily_usage["ENERGY_SPENT_AVG"] = avg
+        fig, ax = plt.subplots()
+        ax = daily_usage.plot(
             x='DAY_STR', y='ENERGY_SPENT', kind='bar',
-            figsize=(10, 10)
+            figsize=(10, 10),
+            ax=ax,
+        )
+        daily_usage.plot(
+            x="DAY_STR", y="ENERGY_SPENT_AVG", kind="line",
+            style='r', ax=ax,
         )
         plt.xticks(rotation=90)
         fn = self.save_pic(tg_id, now)
